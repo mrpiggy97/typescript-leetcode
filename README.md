@@ -1,2 +1,2 @@
-# typescript-leetocode
+# typescript-leetcode
 leetcode with typescript
