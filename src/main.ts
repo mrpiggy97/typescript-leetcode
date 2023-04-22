@@ -59,3 +59,18 @@ function map(arr : number[], fn : (num : number, index : number) => number) : nu
     })
     return newArray
 }
+
+type Fna = (...params : any[]) => Promise<any>
+
+function timeLimit(fn : Fna, t : number) : Fna{
+    return async function(...args : any[]){
+        let timeOutPromise = new Promise((_,reject) => {
+            setTimeout(() => reject("Time Limit Exceeded"),t)
+        })
+        let originalPromese = fn(...args)
+        Promise.race([
+            originalPromese,
+            timeOutPromise
+        ])
+    }
+}
