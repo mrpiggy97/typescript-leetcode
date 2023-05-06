@@ -1,4 +1,5 @@
 import "./globals"
+import fibonacci from "./generator/fibonnaci"
 
 function createCounter(n : number) : ()=> number{
     let previousValue = {
@@ -60,17 +61,49 @@ function map(arr : number[], fn : (num : number, index : number) => number) : nu
     return newArray
 }
 
-type Fna = (...params : any[]) => Promise<any>
+type Fna = () => Promise<any>
 
-function timeLimit(fn : Fna, t : number) : Fna{
-    return async function(...args : any[]){
-        let timeOutPromise = new Promise((_,reject) => {
-            setTimeout(() => reject("Time Limit Exceeded"),t)
-        })
-        let originalPromese = fn(...args)
-        Promise.race([
-            originalPromese,
-            timeOutPromise
-        ])
-    }
+function timeLimit(fn : Fna, t : number){
+    let timeOutPromise = new Promise((_,reject) => {
+        setTimeout(() => reject("Time Limit Exceeded"),t)
+    })
+    Promise.race([
+        fn(),
+        timeOutPromise
+    ]).then((res) => console.log(res)).catch((err) => console.log(err))
 }
+
+function example() : Promise<any>{
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(23),1000) 
+    })
+}
+
+timeLimit(example,5000)
+
+function* myGenerator(): Generator<string, number, string> {
+    let i = 0;
+    while (true) {
+      const value = yield `Value ${i}`;
+      if (value === "motherfucker") {
+        return i*50;
+      }
+      i++;
+    }
+  }
+
+const iterator: Generator<string, number, string> = myGenerator();
+
+console.log(iterator.next(),iterator.next(), iterator.return(5), iterator.next())
+
+const myFibo : Generator<number,any,number> = fibonacci()
+
+for(let i=0; i < 10; i++){
+    console.log(myFibo.next())
+}
+
+let a : number[] = [1,2,3]
+let b : number[] = [1,2,3,5]
+let c : number[] = [1,2,3]
+let r : number[][] = [a,b]
+console.log(r.includes(c))
