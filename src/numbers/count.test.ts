@@ -1,8 +1,8 @@
-import count, {convertToBinary} from "./count";
+import count from "./count";
 describe("test counter of 1 in binary number", () => {
-    test("test convertToBinary correctly converts to binary", () => {
+    test("test counter counts correctly", () => {
         let num : number = 11
-        let result = convertToBinary(num)
-        expect(result).toBe(1011)
+        let result = count(num)
+        expect(result).toBe(3)
     })
 })
